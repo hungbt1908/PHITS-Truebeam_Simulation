@@ -1,0 +1,207 @@
+$OMP=0
+[Title]
+ Input Varian Truebeam STx Head using Phase-Space files
+
+******************************************************************************
+* Author:       Bui Tien Hung                                                *                                 
+* Institute:    Vietnam Atomic Energy Institute                              *
+* email:        hungbt1908@gmail.com                                         *
+* created date: 20/11/2023                                                   *
+******************************************************************************
+
+[Parameters]
+ icntl    =           0     # (D=0) 3:ECH 5:NOR 6:SRC 7,8:GSH 11:DSH 12:DUMP
+ maxcas   =      100000     # (D=10) number of particles per one batch
+ maxbch   =          10     # (D=10) number of batches
+ ipnint   =           1     # (D=0) 0: no, 1: consider photo-nuclear reaction
+ negs     =           1     # (D=-1) =-1:original, =0:No, =1:EGS
+ emin(2)  = 1.000000000E-10 # (D=1.0) cut-off energy of neutron (MeV)
+ dmax(2)  =  20.0000000     # (D=emin(2)) data max. energy of neutron (MeV)
+ emin(12) = 1.000000000E-01 # (D=1.d9) cut-off energy of electron (MeV)
+ emin(13) = 1.000000000E-01 # (D=1.d9) cut-off energy of positron (MeV)
+ emin(14) = 1.000000000E-03 # (D=1.d9) cut-off energy of photon (MeV)
+ dmax(12) =  1000.00000     # (D=emin(12)) data max. energy of electron (MeV)
+ dmax(13) =  1000.00000     # (D=emin(13)) data max. energy of positron (MeV)
+ dmax(14) =  1000.00000     # (D=emin(14)) data max. energy of photon (MeV)
+ igamma   =           2     # (D=0) 0:No, 1:Old, 2:EBITEM, 3:EBITEM+Isomer
+ ipnint   =           1     # (D=0) photonuclear GDR, 1:analog, -1:implicit
+ itimrand =           1     # (D=0) 1: init random seed from starting time
+ 
+[Source]
+set:c1[69184770]  $ ORIG_HISTORIES
+set:c2[9414373]   $ PARTICLES
+  totfact =  c2/c1                  # (D=1.0) global factor
+   s-type =  17                     # external source with PHITS dump file
+     file =  IAEA_TrueBeam_PSF.out  # file name of dump file            
+     jpsf =  1                      # >0 special option for Phase Space File 
+       z0 =  17.7671                # beam starting position
+
+[Material]
+ mat[1] $ Air 
+      C	-0.000124
+	  N	-0.755268
+	  O	-0.231781
+	  F	-0.012827
+ mat[2] $ Tungsten
+      W 1.
+ mat[6] $ Mylar
+     C  10.
+	 H  8.
+	 O  4.
+ mat[7] $ Water
+     H  2
+     O  1
+	 
+[Mat Name Color]
+	mat          name          size          color
+c -------------------------------------------------------------------
+      0        vacuum             1     pastelpink
+	    1           air             1      lightgray
+      7         water             1           blue
+	  
+[Surface]
+  1   px  -0.6
+  2   px   0.6
+  3   py  -0.6
+  4   py   0.6
+  5   pz   0.1561
+  6   pz   0.2450
+  7   pz  -1.38E-3 
+  8   cz   1
+  9   cz   8
+  10  pz  -4
+  11  pz   2
+  13  pz   3.1
+  14  pz   9.3
+  15  trc  0 0 3.0 0 0 6.4 0.5 1.7658592
+  16  cz   3.6
+  17  pz   9.98
+  18  pz   10.02
+  19  cz   5.0799
+  20  pz   15.65926
+  21  pz   16.2253
+  22  cz   5.08
+  23  pz   15.65936
+  24  pz   15.74064
+  25  pz   15.7746
+  26  pz   15.8254
+  27  pz   15.85936
+  28  pz   15.94064
+  29  pz   16.95936
+  30  pz   16.04064
+  31  pz   16.05936
+  32  pz   16.14064
+  33  pz   16.1746
+  34  pz   16.2254
+  35  rcc  0 0 0.05 0 0 0.1 6.3
+  36  rpp -4.5 4.5 -9.3 9.3 -3.9 3.9
+  37  rpp -9.3 9.3 -4.5 4.5 -3.9 3.9
+  96  rpp -15 15 -15 15 100. 130.
+  99  rpp -50. 50. -50. 50. -10. 150.
+ 
+[Cell]
+ 98   0        -99 #15 #16 #17 #18 #19
+ 99  -1         99
+ 15   2  -19.3  (-36) trcl =2             $ Jaws 1X
+ 16   2  -19.3  (-36) trcl =3             $ Jaws 2X
+ 17   2  -19.3  (-37) trcl =4             $ Jaws 1Y
+ 18   2  -19.3  (-37) trcl =5             $ Jaws 2Y
+ 19   7  -1.0   (-96)
+ 
+[Reg Name]
+    reg                   name           size
+c -------------------------------------------------------------------
+	 98                   word            0.5
+
+[Transform]
+ tr1 0 0 17.5 0.9781476 0 0.2079117 0.0000000 1 0.0000000 -0.2079117 0 0.9781476 1
+ tr2 6.2821 0 35.5301 0.99878559 0 -0.04926814 0.00000000 1  0.00000000 0.04926814 0  0.99878559 1  $ Jaw 1X pos    
+ tr3 -6.2821 0 35.5301 0.99878559 0 0.04926814 0.00000000 1 0.00000000 -0.04926814 0 0.99878559 1  $ Jaw 2X pos  
+ tr4 0 5.8437 26.7616 1 0.00000000 0.00000000 0 0.99878559 -0.04926814 0 0.04926814 0.99878559 1    $ Jaw 1Y pos 
+ tr5 0  -5.8437 26.7616 1 0.00000000 0.00000000 0 0.99878559 0.04926814 0 -0.04926814 0.99878559 1   $ Jaw 2Y pos 
+
+[ Importance ]
+ part = photon
+ reg    imp
+ 19     3
+
+[ T-Track ] off
+    title = Track in xyz mesh
+     mesh =  xyz            # mesh type is xyz scoring mesh
+   z-type =    2            # z-mesh is linear given by xmin, xmax and nx
+     zmin =  -10.00000      # minimum value of z-mesh points
+     zmax =   50.00000      # maximum value of z-mesh points
+       nz =   600           # number of z-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  -20.00000      # minimum value of y-mesh points
+     ymax =   20.00000      # maximum value of y-mesh points
+       ny =    1            # number of y-mesh points
+   x-type =    2            # x-mesh is linear given by zmin, zmax and nz
+     xmin =  -20.00000      # minimum value of x-mesh points
+     xmax =   20.00000      # maximum value of x-mesh points
+       nx =   400           # number of x-mesh points
+  2D-type =    3            # 1:Cont, 2:Clust, 3:Color, 4:xyz, 5:mat, 6:Clust+Cont, 7:Col+Cont
+     axis =   xz            # axis of output
+     file = track.out       # file name of output for the above axis
+     part = electron photon
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     unit =    1            # unit is [1/cm^2/source]
+   epsout =    1            # (D=0) generate eps file by ANGEL   
+    gshow =    1            # 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+c	trcl = 0 0 0 0 0 -1 0 1 0 1 0 0
+c   x-txt = x [cm]
+c   y-txt = z [cm]
+
+ [T - Track] off
+    title = Track in xyz mesh
+     mesh =  xyz            # mesh type is xyz scoring mesh
+   x-type =    2            # x-mesh is linear given by xmin, xmax and nx
+     xmin =  -20.00000      # minimum value of x-mesh points
+     xmax =   20.00000      # maximum value of x-mesh points
+       nx =   400           # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  -20.00000      # minimum value of y-mesh points
+     ymax =   20.00000      # maximum value of y-mesh points
+       ny =    1            # number of y-mesh points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  -2.00000       # minimum value of z-mesh points
+     zmax =   130.00000     # maximum value of z-mesh points
+       nz =   1320          # number of z-mesh points
+  2D-type =    3            # 1:Cont, 2:Clust, 3:Color, 4:xyz, 5:mat, 6:Clust+Cont, 7:Col+Cont
+     axis =   xz            # axis of output
+     file = track.out       # file name of output for the above axis
+     part = electron photon
+   e-type =    1            # e-mesh is given by the below data
+       ne =    1            # number of e-mesh points
+             0.0  1000.0
+     unit =    1            # unit is [1/cm^2/source]
+   epsout =    1            # (D=0) generate eps file by ANGEL   
+    gshow =    1            # 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+
+[ T - D e p o s i t ]
+    title = Deposit in xyz mesh
+     mesh =  xyz            # mesh type is xyz scoring mesh
+   x-type =    2            # x-mesh is linear given by xmin, xmax and nx
+     xmin =  -0.500000      # minimum value of x-mesh points
+     xmax =   0.500000      # maximum value of x-mesh points
+       nx =    1            # number of x-mesh points
+   y-type =    2            # y-mesh is linear given by ymin, ymax and ny
+     ymin =  -0.500000      # minimum value of y-mesh points
+     ymax =   0.500000      # maximum value of y-mesh points
+       ny =    1            # number of y-mesh points
+   z-type =    2            # z-mesh is linear given by zmin, zmax and nz
+     zmin =  100.00000      # minimum value of z-mesh points
+     zmax =  130.00000      # maximum value of z-mesh points
+       nz =  300            # number of z-mesh points
+     unit =    0            # unit is [Gy/source]
+  2D-type =    3            # 1:Cont, 2:Clust, 3:Color, 4:xyz, 5:mat, 6:Clust+Cont, 7:Col+Cont
+     axis =    z            # axis of output
+     file = PDD.out         # file name of output for the above axis
+ material =  all            # (D=all) number of specific material
+   output = dose            # only heat is written
+   epsout =    1            # (D=0) generate eps file by ANGEL
+    gshow =    1            # 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
+	
+[End]
