@@ -9,15 +9,9 @@ $OMP=0
 * created date: 01/30/2024                                                   *
 ******************************************************************************
 
-set:c1[100]  $ SSD (cm)
-set:c2[-5]   $ fieldX1 (cm)
-set:c3[5]    $ fieldX2 (cm)
-set:c4[-5]   $ fieldY1 (cm)
-set:c5[5]    $ fieldY2 (cm)
-
 [Parameters]
- icntl    =           8     # (D=0) 3:ECH 5:NOR 6:SRC 7,8:GSH 11:DSH 12:DUMP
- maxcas   =      520000     # (D=10) number of particles per one batch
+ icntl    =           0     # (D=0) 3:ECH 5:NOR 6:SRC 7,8:GSH 11:DSH 12:DUMP
+ maxcas   =     5200000     # (D=10) number of particles per one batch
  maxbch   =          10     # (D=10) number of batches
  ipnint   =           1     # (D=0) 0: no, 1: consider photo-nuclear reaction
  negs     =           1     # (D=-1) =-1:original, =0:No, =1:EGS
@@ -68,12 +62,12 @@ set:c5[5]    $ fieldY2 (cm)
  20  rpp -25 25 -25 25 55.7-0.01016/2 55.7+0.01016/2
  21  rcc 0. 0. 45.938-1.524/2. 0. 0. 1.524 11.575
  22  rcc 0. 0. 45.938-1.524/2. 0. 0. 1.524 30.226
- 30  rpp -4.5 4.5 -9.3 9.3 -3.9 3.9
- 31  rpp -9.3 9.3 -4.5 4.5 -3.9 3.9
+ 30  rpp -5. 5. -9. 9. -3.9 3.9
+ 31  rpp -9. 9. -5. 5. -3.9 3.9
  50  rpp -15 15 -15 15 100. 130.
 
 [Cell]
- 98   1 -1.29E-3 -99 10
+ 98   1 -1.29E-3 -99 10 #50
  99  -1           99
  10   0          -10 11                    $ Gantry
  11   0          -11 #30 #31 #32 #33 #20
@@ -87,31 +81,37 @@ set:c5[5]    $ fieldY2 (cm)
  50   5 -1.0     -50                       $ Water phantom
  
 [Transform]
- set:c6[ATAN(-c4/c1)] $ ThetaY1 (rad)
- set:c7[ATAN(c5/c1)]  $ ThetaY2 (rad)
- set:c8[ATAN(-c2/c1)] $ ThetaX1 (rad)
- set:c9[ATAN(c3/c1)]  $ ThetaX2 (rad)
- tr30 -8.762218276849424 0. 40.323525174328853
-      COS(-c8) 0. -SIN(-c8)
-	  0.       1.  0.
-	  SIN(-c8) 0.  COS(-c8)
-	  1
- tr31 8.762218276849424 0. 40.323525174328853
-      COS(c9) 0. -SIN(c9)
-	  0.      1.  0.
-	  SIN(c9) 0.  COS(c9)
-	  1 
- tr32 0. -7.557505432437033 31.465022738322835
-      1.  0.      0.
-	  0.  COS(c6) SIN(c6)
-	  0. -SIN(c6) COS(c6)
-	  1
- tr33 0. 7.557505432437033 31.465022738322835
-      1.  0.      0.
-	  0.  COS(-c7) SIN(-c7)
-	  0. -SIN(-c7) COS(-c7)
-	  1
-[ T-Track ]
+ set:c1[100]  $ SSD (cm)
+ set:c2[-5]   $ fieldX1 (cm)
+ set:c3[5]    $ fieldX2 (cm)
+ set:c4[-5]   $ fieldY1 (cm)
+ set:c5[5]    $ fieldY2 (cm)
+ set:c6[ABS(ATAN(-c2/c1))] $ ThetaX1 (rad)
+ set:c7[ABS(ATAN(c3/c1))]  $ ThetaX2 (rad)
+ set:c8[ABS(ATAN(-c4/c1))] $ ThetaY1 (rad)
+ set:c9[ABS(ATAN(c5/c1))]  $ ThetaY2 (rad)
+
+ tr30 40.6*SIN(c6)+5.*COS(c6) 0.  40.6*COS(c6)-5.*SIN(c6)
+      0.                      c6  0.
+	  0.                      0.  0.
+	  0.                      0.  0.
+	  2
+ tr31 -40.6*SIN(c7)-5.*COS(c7) 0.   40.6*COS(c7)-5.*SIN(c7)
+      0.                       -c7  0.
+	  0.                       0.   0.
+	  0.                       0.   0.
+	  2 
+ tr32 0. 31.9*SIN(c8)+5.*COS(c8) 31.9*COS(c8)-5.*SIN(c8)
+      0. 0.                      -c8
+	  0. 0.                      0.
+      0. 0.                      0.	  
+	  2
+ tr33 0. -31.9*SIN(c9)-5.*COS(c9) 31.9*COS(c9)-5.*SIN(c9)
+      0. 0.                       c9
+	  0. 0.                       0.
+	  0. 0.                       0.
+	  2
+[ T-Track ] off
     title = Track in xyz mesh
      mesh =  xyz            # mesh type is xyz scoring mesh
    z-type =    2            # z-mesh is linear given by xmin, xmax and nx
@@ -137,7 +137,7 @@ set:c5[5]    $ fieldY2 (cm)
    epsout =    1            # (D=0) generate eps file by ANGEL   
     gshow =    1            # 0: no 1:bnd, 2:bnd+mat, 3:bnd+reg 4:bnd+lat
 
-[ T-Track ]
+[ T-Track ] off
     title = Track in xyz mesh
      mesh =  xyz            # mesh type is xyz scoring mesh
    z-type =    2            # z-mesh is linear given by xmin, xmax and nx
